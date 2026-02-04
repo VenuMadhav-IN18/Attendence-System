@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance for Blue Collar Workers</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Attendance for Blue Collar Workers</h1>
+      <p class="tagline">Track daily wage & contract worker attendance</p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="mark">Mark Attendance</button>
+      <button class="tab" data-tab="workers">Workers</button>
+      <button class="tab" data-tab="records">Attendance Records</button>
+    </nav>
+
+    <main class="content">
+      <!-- Mark Attendance -->
+      <section id="mark" class="panel active">
+        <div class="date-bar">
+          <label for="attendance-date">Date</label>
+          <input type="date" id="attendance-date" required>
+          <button type="button" id="btn-today">Today</button>
+        </div>
+        <div class="attendance-list" id="attendance-list">
+          <p class="empty-state">Add workers in the Workers tab first.</p>
+        </div>
+        <div class="actions">
+          <button type="button" id="btn-save-attendance" class="btn-primary">Save Attendance</button>
+        </div>
+      </section>
+
+      <!-- Workers -->
+      <section id="workers" class="panel">
+        <form id="worker-form" class="worker-form">
+          <h3>Add Worker</h3>
+          <div class="form-row">
+            <input type="text" id="worker-name" placeholder="Full name" required>
+            <input type="text" id="worker-role" placeholder="Role (e.g. Mason, Painter)">
+          </div>
+          <div class="form-row">
+            <input type="number" id="worker-wage" placeholder="Daily wage (optional)" min="0" step="0.01">
+            <button type="submit" class="btn-primary">Add Worker</button>
+          </div>
+        </form>
+        <div class="workers-list" id="workers-list">
+          <p class="empty-state">No workers yet. Add one above.</p>
+        </div>
+      </section>
+
+      <!-- Attendance Records -->
+      <section id="records" class="panel">
+        <div class="filters">
+          <input type="date" id="filter-date-from" title="From date">
+          <span>to</span>
+          <input type="date" id="filter-date-to" title="To date">
+          <select id="filter-worker">
+            <option value="">All workers</option>
+          </select>
+          <button type="button" id="btn-filter" class="btn-secondary">Apply</button>
+        </div>
+        <div class="records-table-wrap">
+          <table class="records-table" id="records-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Worker</th>
+                <th>Role</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="records-body">
+              <tr><td colspan="4" class="empty-cell">No records. Mark attendance to see data.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="summary" id="summary"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Attendance for Blue Collar Workers &middot; Phase 1 (HTML, CSS, JS)</p>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
