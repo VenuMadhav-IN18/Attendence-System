@@ -1,10 +1,10 @@
 require('dotenv').config();
 
-const express = require('express');
-const cors = require('cors');
+import express, { json } from 'express';
+import cors from 'cors';
 
-const workersRouter = require('./routes/workers').default;
-const attendanceRouter = require('./routes/attendance').default;
+import workersRouter from './routes/workers';
+import attendanceRouter from './routes/attendance';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,19 +16,35 @@ const allowedOrigins = [
   'https://attendence-system-kohl.vercel.app'
 ];
 
-// ✅ CORS middleware
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // allow server-to-server, Postman, curl
+    if (!origin) return callback(null, true);
+
+    // allow all vercel preview domains
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    // allow known origins
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log('❌ CORS blocked:', origin);
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// ✅ Handle preflight requests
+// IMPORTANT
 app.options('*', cors());
 
+
 // ✅ Body parser
-app.use(express.json());
+app.use(json());
 
 // ✅ Routes
 app.use('/api/workers', workersRouter);
