@@ -1,9 +1,19 @@
-import { createPool } from 'mysql2/promise';
-import config from './config/db.js';
+import mysql from 'mysql2/promise';
 
-const pool = createPool(config);
+const pool = mysql.createPool({
+  host: process.env.MYSQL_HOST,
+  port: Number(process.env.MYSQL_PORT),
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
 
-// ✅ named export that your routes expect
-export const query = (sql, params = []) => {
-  return pool.execute(sql, params);
-};
+  ssl: {
+    rejectUnauthorized: false
+  },
+
+  waitForConnections: true,
+  connectionLimit: 5,
+  connectTimeout: 15000
+});
+
+export const query = (sql, params = []) => pool.execute(sql, params);
