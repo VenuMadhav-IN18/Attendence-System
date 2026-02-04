@@ -1,6 +1,9 @@
-const mysql = require('mysql2/promise');
-const config = require('./config/db');
+import { createPool } from 'mysql2/promise';
+import config from './config/db.js';
 
-const pool = mysql.createPool(config);
+const pool = createPool(config);
 
-module.exports = pool;
+// ✅ named export that your routes expect
+export const query = (sql, params = []) => {
+  return pool.execute(sql, params);
+};

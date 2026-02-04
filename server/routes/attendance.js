@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import { query } from '../db';
+import { query } from '../db.js';
 
 router.get('/', async (req, res, next) => {
   try {
