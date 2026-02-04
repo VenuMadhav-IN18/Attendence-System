@@ -3,17 +3,36 @@
  * Vite proxy forwards /api to backend in dev.
  * In production, use VITE_API_URL environment variable.
  */
-const BASE = import.meta.env.VITE_API_URL || '/api';
+const getBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl) return '/api'; // Dev: use proxy
+  // If VITE_API_URL doesn't end with /api, add it
+  if (envUrl.endsWith('/api')) return envUrl;
+  return `${envUrl}/api`;
+};
+
+const BASE = getBaseUrl();
 
 async function request(path, options = {}) {
-  const url = path.startsWith('http') ? path : `${BASE}${path}`;
+  // Ensure path starts with /
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const url = cleanPath.startsWith('http') ? cleanPath : `${BASE}${cleanPath}`;
+  
+  console.log('API Request:', url, options.method || 'GET'); // Debug log
+  
   const res = await fetch(url, {
     ...options,
     headers: { 'Content-Type': 'application/json', ...options.headers },
   });
+  
+  console.log('API Response:', res.status, res.statusText); // Debug log
+  
   if (res.status === 204) return null;
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || res.statusText || 'Request failed');
+  if (!res.ok) {
+    console.error('API Error:', res.status, data); // Debug log
+    throw new Error(data.error || res.statusText || 'Request failed');
+  }
   return data;
 }
 

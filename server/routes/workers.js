@@ -1,6 +1,14 @@
+import cors from "cors";
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+
+
+app.use(cors({
+  origin: "https://attendence-system-kohl.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 router.get('/', async (req, res, next) => {
   try {
