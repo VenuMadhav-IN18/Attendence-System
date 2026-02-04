@@ -16,7 +16,7 @@ export default function Records() {
   const loadWorkers = async () => {
     try {
       const list = await workersApi.list();
-      setWorkers(list);
+      setWorkers(Array.isArray(list) ? list : []);
     } catch {
       setWorkers([]);
     }
@@ -30,7 +30,7 @@ export default function Records() {
       if (filters.dateTo) params.dateTo = filters.dateTo;
       if (filters.workerId) params.workerId = filters.workerId;
       const list = await attendanceApi.list(params);
-      setRecords(list);
+      setRecords(Array.isArray(list) ? list : []);
     } catch (e) {
       showToast(e.message || 'Failed to load records');
       setRecords([]);

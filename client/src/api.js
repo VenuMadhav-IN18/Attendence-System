@@ -18,7 +18,10 @@ async function request(path, options = {}) {
 }
 
 export const workersApi = {
-  list: () => request('/workers'),
+  list: async () => {
+    const result = await request('/workers');
+    return Array.isArray(result) ? result : [];
+  },
   get: (id) => request(`/workers/${id}`),
   create: (body) => request('/workers', { method: 'POST', body: JSON.stringify(body) }),
   update: (id, body) => request(`/workers/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
@@ -26,11 +29,15 @@ export const workersApi = {
 };
 
 export const attendanceApi = {
-  list: (params = {}) => {
+  list: async (params = {}) => {
     const q = new URLSearchParams(params).toString();
-    return request(`/attendance${q ? '?' + q : ''}`);
+    const result = await request(`/attendance${q ? '?' + q : ''}`);
+    return Array.isArray(result) ? result : [];
   },
-  byDate: (date) => request(`/attendance/by-date/${date}`),
+  byDate: async (date) => {
+    const result = await request(`/attendance/by-date/${date}`);
+    return Array.isArray(result) ? result : [];
+  },
   save: (date, entries) => request('/attendance/save', {
     method: 'POST',
     body: JSON.stringify({ date, entries }),

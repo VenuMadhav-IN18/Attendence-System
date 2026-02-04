@@ -15,9 +15,10 @@ export default function Workers() {
   const load = async () => {
     try {
       const list = await workersApi.list();
-      setWorkers(list);
+      setWorkers(Array.isArray(list) ? list : []);
     } catch (e) {
       showToast(e.message || 'Failed to load workers');
+      setWorkers([]);
     } finally {
       setLoading(false);
     }

@@ -17,9 +17,10 @@ export default function MarkAttendance() {
   const loadWorkers = async () => {
     try {
       const list = await workersApi.list();
-      setWorkers(list);
+      setWorkers(Array.isArray(list) ? list : []);
     } catch (e) {
       showToast(e.message || 'Failed to load workers');
+      setWorkers([]);
     } finally {
       setLoading(false);
     }
@@ -31,7 +32,9 @@ export default function MarkAttendance() {
       const records = await attendanceApi.byDate(date);
       const next = {};
       workers.forEach((w) => { next[w.id] = null; });
-      records.forEach((r) => { next[r.workerId] = r.status; });
+      if (Array.isArray(records)) {
+        records.forEach((r) => { next[r.workerId] = r.status; });
+      }
       setState(next);
     } catch {
       const next = {};
