@@ -3,8 +3,9 @@ require('dotenv').config();
 import express, { json } from 'express';
 import cors from 'cors';
 
-import workersRouter from './routes/workers';
-import attendanceRouter from './routes/attendance';
+import workersRouter from './routes/workers.js';
+import attendanceRouter from './routes/attendance.js';
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
