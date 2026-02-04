@@ -3,8 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const workersRouter = require('./routes/workers');
-const attendanceRouter = require('./routes/attendance');
+const workersRouter = require('./routes/workers').default;
+const attendanceRouter = require('./routes/attendance').default;
 
 const app = express();
 const PORT = process.env.PORT || 5000;

@@ -3,9 +3,9 @@
  * Run: node server/scripts/init-db.js
  * Ensure MySQL is running and credentials in .env are correct.
  */
-const mysql = require('mysql2/promise');
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+import { createConnection } from 'mysql2/promise';
+import { join } from 'path';
+require('dotenv').config({ path: join(__dirname, '../../.env') });
 
 const config = {
   host: process.env.MYSQL_HOST || 'localhost',
@@ -17,7 +17,7 @@ const config = {
 async function run() {
   let conn;
   try {
-    conn = await mysql.createConnection(config);
+    conn = await createConnection(config);
     const dbName = process.env.MYSQL_DATABASE || 'attendance_blue_collar';
     await conn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\`;`);
     await conn.query(`USE \`${dbName}\`;`);

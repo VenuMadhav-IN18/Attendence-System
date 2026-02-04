@@ -1,18 +1,10 @@
-import cors from "cors";
-const express = require('express');
-const router = express.Router();
-const db = require('../db');
-
-
-app.use(cors({
-  origin: "https://attendence-system-kohl.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+import { Router } from 'express';
+const router = Router();
+import { query } from '../db';
 
 router.get('/', async (req, res, next) => {
   try {
-    const [rows] = await db.query(
+    const [rows] = await query(
       'SELECT id, name, role, daily_wage AS dailyWage, created_at AS createdAt FROM workers ORDER BY name'
     );
     res.json(rows);
@@ -27,11 +19,11 @@ router.post('/', async (req, res, next) => {
     if (!name || typeof name !== 'string' || !name.trim()) {
       return res.status(400).json({ error: 'Name is required' });
     }
-    const [result] = await db.query(
+    const [result] = await query(
       'INSERT INTO workers (name, role, daily_wage) VALUES (?, ?, ?)',
       [name.trim(), (role || '').trim(), dailyWage != null ? parseFloat(dailyWage) : null]
     );
-    const [rows] = await db.query(
+    const [rows] = await query(
       'SELECT id, name, role, daily_wage AS dailyWage, created_at AS createdAt FROM workers WHERE id = ?',
       [result.insertId]
     );
@@ -43,7 +35,7 @@ router.post('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    const [rows] = await db.query(
+    const [rows] = await query(
       'SELECT id, name, role, daily_wage AS dailyWage, created_at AS createdAt FROM workers WHERE id = ?',
       [req.params.id]
     );
@@ -58,11 +50,11 @@ router.put('/:id', async (req, res, next) => {
   try {
     const { name, role, dailyWage } = req.body;
     const id = req.params.id;
-    await db.query(
+    await query(
       'UPDATE workers SET name = COALESCE(?, name), role = COALESCE(?, role), daily_wage = ? WHERE id = ?',
       [name != null ? name.trim() : null, role != null ? (role || '').trim() : null, dailyWage != null ? parseFloat(dailyWage) : null, id]
     );
-    const [rows] = await db.query(
+    const [rows] = await query(
       'SELECT id, name, role, daily_wage AS dailyWage, created_at AS createdAt FROM workers WHERE id = ?',
       [id]
     );
@@ -75,7 +67,7 @@ router.put('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
   try {
-    const [result] = await db.query('DELETE FROM workers WHERE id = ?', [req.params.id]);
+    const [result] = await query('DELETE FROM workers WHERE id = ?', [req.params.id]);
     if (result.affectedRows === 0) return res.status(404).json({ error: 'Worker not found' });
     res.status(204).send();
   } catch (e) {
@@ -83,4 +75,4 @@ router.delete('/:id', async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;
